@@ -1,0 +1,972 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashguard</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="project.css">
+    <script src="jquery-3.7.1.js"></script>
+    <script src="jquery-ui.js"></script>
+<style>
+      h1 {
+        font-family:'Times New Roman', Times, serif;
+        font-size: 2rem;
+        color: #f4f7fb;
+        text-align: center;
+        font-weight: 700;
+    }
+</style>
+</head>
+<body>
+        <header>
+            <img src="logo-transparent.png" alt="Logo">
+            <h1>CASHGUARD</h1>
+            
+<div class="tabs">
+  <a href="#dashboard" class="nav-tab active">📊 Dashboard</a>
+  <a href="#transaction" class="nav-tab">📋 Transactions</a>
+  <a href="#bookmarks" class="nav-tab">🔖 Bookmarks</a>
+  <a href="#budget" class="nav-tab">📊 Budget</a>
+</div>
+
+<div class="nav-right">
+     <div class="icon" onclick="toggleSettings()"><i class="fa-solid fa-gear"></i></div>
+    <div class="avatar ml-4" id="av" aria-label="User avatar"></div>
+    <div class="texte px-2" id="userName" style="font-weight: 700; font-size: 1.1rem;"></div>
+    
+    <div id="settingsList" class="dropdown">
+      <div class="s-item" onclick="toggleDarkMode()">
+        <i id="themeToggleIcon" class="fa-solid fa-moon" aria-hidden="true"></i>
+        <span id="themeToggleLabel">Switch to dark mode</span>
+      </div>
+      <div class="s-item" onclick="setBudget()"><i class="fa-solid fa-wallet" aria-hidden="true"></i><span>Set budget</span></div>
+      <div class="s-item" onclick="exportData()"><i class="fa-solid fa-download" aria-hidden="true"></i><span>Export data</span></div>
+      <div class="s-item" id="hov" onclick="clearData()" style="color: red;"><i style="color: red;" class="fa-regular fa-trash-can" aria-hidden="true"></i><span>Clear all data</span></div>
+      <div class="s-item" id="hov" onclick="logout()" style="color: red;"><i style="color: red;" class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Logout</span></div>
+    </div>
+  </div>
+    </header>
+    <main class="mt-6">
+    <section id="dashboard" class="dashboard">
+      <div class="cov m-0 h-75">
+        <div class="cap px-6 py-5">
+          <div class="caption-copy">
+            <span class="eyebrow">Financial clarity</span>
+            <h2>Track every <br> naira with confidence.</h2>
+            <p>
+              Keep your income, spending, and savings in one calm, focused view.
+              CashGuard helps you monitor progress, spot trends, and make smarter
+              decisions with a simple dashboard designed for real-life money habits.
+            </p>
+          </div>
+        </div>
+
+      </div> 
+      <div class="card-row py-1">
+        <div class="card">
+          <small class="card-title text-muted">Income</small>
+          <i id="arrow" class="fa-solid fa-arrow-trend-up"></i>  
+          <h2 id="incomeValue" class="card-body">₦0</h2>
+          <p id="incomeStatus" style="color: green;">No income recorded yet</p>
+        </div>
+        <div class="card" style="border: red 2px solid;">
+          <small class="card-title text-muted">Expense</small>
+           <i id="down"  class="fa-solid fa-circle-chevron-down"></i>
+
+          <h2 id="expenseValue" class="card-body">₦0</h2>
+          <p id="expenseStatus" style="color: red;">No expenses recorded yet</p>
+        </div>
+        <div class="card" style="border: blue 2px solid;">
+          <small class="card-title text-muted">Balance</small>
+           <i id="wallet" class="fa-solid fa-wallet"></i>
+          <h2 id="balanceValue" class="card-body">₦0</h2>
+          <p>Available to spend</p>
+        </div>
+        <div class="card" style="border: purple 2px solid;">
+          <small class="card-title text-muted">Total Recorded</small>
+          <i id="sack" class="fa-solid fa-sack-dollar"></i>
+          <h2 id="totalValue" class="card-body">₦0</h2>
+          <p>All transaction made</p>
+        </div>
+      </div>
+
+      <div class="onboarding">
+        <div class="onboarding-header">
+          <div>
+            <span class="over">Getting started</span>
+            <h3>Quick onboarding tips</h3>
+          </div>
+          <button type="button" id="completeSetupBtn" class="mini-btn"><i class="fa-solid fa-circle-check"></i> Complete setup</button>
+        </div>
+   
+        <div class="tips-grid">
+          <div class="tip-card">
+            <span class="tip-number">1</span>
+            <div>
+              <h4>Add your first transaction</h4>
+              <p>Record income and expenses to see your real money flow.</p>
+            </div>
+          </div>
+
+          <div class="tip-card">
+            <span class="tip-number">2</span>
+            <div>
+              <h4>Set a monthly budget</h4>
+              <p>Assign limits by category so you stay on top of spending.</p>
+            </div>
+          </div>
+
+          <div class="tip-card">
+            <span class="tip-number">3</span>
+            <div>
+              <h4>Bookmark important entries</h4>
+              <p>Save repeat transactions and revisit them whenever needed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </section>
+    <section id="transaction" class="transaction px-4 pt-4">
+      <div class="tx-wrap">
+        <div class="section-heading">
+          <div>
+            <span class="over">Money movement</span>
+            <h2>Transactions</h2>
+            <p>Capture income and spending so your monthly picture stays current.</p>
+          </div>
+          <div id="periodStatus" class="period-status"><i class="fa-regular fa-calendar"></i><div id="periodLabel"></div></div>
+        </div>
+
+        <div class="tx-layout">
+          <form class="add-form" id="transactionForm">
+            <div class="form-head">
+              <div class="form-icon"><i class="fa-solid fa-plus"></i></div>
+              <div>
+                <h3 id="transactionFormTitle">Add transaction</h3>
+                <p id="transactionFormHint">Log a new entry in a few seconds.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required />
+              </div>
+
+              <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" placeholder="e.g. Weekly groceries" required />
+              </div>
+
+              <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                  <option value="Food">Food</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Savings">Savings</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Education">Education</option>
+                  <option value="Personal Care">Personal Care</option>
+                  <option value="Subscription">Subscription</option>
+                  <option value="Rent">Rent</option>
+                  <option value="Other">Other</option>
+                  <option value="Salary">Salary</option>
+                  <option value="Side Hustle">Side Hustle</option>
+                  <option value="Allowance">Allowance</option>
+                  <option value="Freelance/Work">Freelance/Work</option>
+                  <option value="Gifts">Gifts</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                  <option value="income">Income</option>
+                  <option value="expense">Expense</option>
+                </select>
+              </div>
+
+              <div class="form-group amount-field">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" name="amount" placeholder="0" required />
+              </div>
+
+              <button type="submit" id="saveTransactionBtn" class="save-btn">Save Transaction</button>
+              <button type="button" id="cancelEditBtn" class="mini-btn" hidden>Cancel edit</button>
+            </div>
+          </form>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Recent activity</h2>
+                <p>Review your latest money movement.</p>
+              </div>
+              <div class="tx-controls">
+                <label class="tx-search">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="search" id="transactionSearch" placeholder="Search transactions..." aria-label="Search transactions" />
+                </label>
+                <button class="mini-btn"><i class="fa-solid fa-sliders"></i> Monthly</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="transactionRows"></tbody>
+              </table>
+            </div>
+            <p class="transaction-status" id="transactionStatus" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+        <section id="bookmarks" class="bookmark">
+      <div class="bookmark-wrap">
+        <div class="bookmark-heading">
+          <div>
+            <span class="bookmark-eyebrow">QUICK ACCESS</span>
+            <h2>Bookmarks</h2>
+            <p>Your bookmarked transactions, all in one place.</p>
+          </div>
+          <span class="bookmark-note"><i class="fa-regular fa-bookmark"></i> Saved on this device</span>
+        </div>
+
+        <div class="bookmark-grid" id="bookmarkGrid" aria-live="polite"></div>
+      </div>
+    </section><br>
+    <section id="budget" class="budget px-5 pt-4">
+      <div class="section-heading">
+        <span class="over">BUDGET OVERVIEW</span>
+        <h2>Budget</h2>
+        <p>Monthly financial overview</p>
+      </div>
+
+      <div class="bud-wrap">
+      <form class="form p-4 mt-sm-3" id="budgetForm" action="">
+        <div class="text-bud">
+          <h3><i class="fa-solid fa-wallet"></i> Set budget</h3>
+         <p>Create your monthly spending limit</p>
+        </div>
+        <div class="form-group">
+          <label for="budgetCategory">Category</label>
+          <select class="form-select" id="budgetCategory" name="budgetCategory" required>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Savings">Savings</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Education">Education</option>
+            <option value="Personal Care">Personal Care</option>
+            <option value="Subscription">Subscription</option>
+            <option value="Rent">Rent</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+          <div class="form-group">
+            <label for="budgetAmount">Budget amount</label>
+            <input type="number" id="budgetAmount" name="budgetAmount"
+       min="0.01" step="0.01" placeholder="₦0.00" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="budgetPeriod">Period</label>
+            <select name="budgetPeriod" id="budgetPeriod" class="form-select" aria-label="Budget period">
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="budgetMonth">Month</label>
+            <input type="month" name="budgetMonth" class="form-control" id="budgetMonth" required>
+          </div>
+         <button type="submit" class="save-btn px-6 Pt-2">Save Budget</button>
+      </form>
+
+      <div class="pane budget-card mt-sm-3">
+          <h4>Budget Progress</h4>
+          <div class="circle" id="budgetProgressCircle"><span id="budgetProgressValue">0%</span></div>
+
+          <div class="budget-meta">
+            <div><strong>Spent:</strong> <span id="budgetSpentValue">₦0</span></div>
+            <div><strong>Remaining:</strong> <span id="budgetRemainingValue">₦0</span></div>
+            <div><strong>Month:</strong> <span id="budgetMonthValue">--</span></div>
+          </div>
+        </div>  
+     </div>
+         <div class="panel category-breakdown">
+          <h3>Category Breakdown</h3>
+
+          <div class="category-list" id="categoryBudgetList" aria-live="polite"></div>
+        </div>
+
+    </section>
+    </main>
+    <footer>
+      <p>CashGuard © 2026</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </footer>
+    <script>
+         document.getElementById("periodLabel").textContent =
+         new Date().toLocaleDateString("en",{
+          month :"long",
+          year : "numeric"
+         });
+         
+      const currentUserName = sessionStorage.getItem('currentUser') || localStorage.getItem('currentUser') || '';
+      if (!currentUserName) window.location.replace('login.html');
+      document.getElementById('userName').textContent = currentUserName.trim();
+      document.getElementById('av').textContent = currentUserName.trim().charAt(0).toUpperCase() || '?';
+
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', function(e) {
+          e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const target = document.querySelector(targetId);
+          if (!target) return;
+
+          const header = document.querySelector('header');
+          const topOffset = header ? header.offsetHeight + 12 : 12;
+          const targetTop = target.getBoundingClientRect().top + window.scrollY - topOffset;
+
+          window.scrollTo({
+            top: targetTop,
+            behavior: 'smooth'
+          });
+
+          document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      function toggleSettings() {
+        const settings = document.getElementById('settingsList');
+        settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
+      }
+
+      function logout() {
+        sessionStorage.removeItem('currentUser');
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+      }
+
+      const accountStorageKey = encodeURIComponent(currentUserName.trim());
+      const transactionStorageKey = `cashguard.transactions.${accountStorageKey}`;
+      const budgetStorageKey = `cashguard.budget.${accountStorageKey}`;
+      const themeStorageKey = `cashguard.theme.${accountStorageKey}`;
+
+function updateThemeToggle(isDark) {
+  document.getElementById('themeToggleIcon').className = isDark
+  ? 'fa-mosaic fa-solid fa-sun'
+  : 'fa-solid fa-moon';
+  document.getElementById('themeToggleLabel').textContent = isDark            
+  ? 'Switch to light mode'
+  : 'Switch to dark mode';
+}
+
+
+function toggleDarkMode() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light');
+  updateThemeToggle(isDark);
+}
+
+const isDarkMode = localStorage.getItem(themeStorageKey) === 'dark';
+document.body.classList.toggle('dark-mode', isDarkMode);
+updateThemeToggle(isDarkMode);
+      const transactionForm = document.getElementById('transactionForm');
+      const transactionRows = document.getElementById('transactionRows');
+      const transactionSearch = document.getElementById('transactionSearch');
+      const transactionStatus = document.getElementById('transactionStatus');
+      const bookmarkGrid = document.getElementById('bookmarkGrid');
+      const saveTransactionBtn = document.getElementById('saveTransactionBtn');
+      const cancelEditBtn = document.getElementById('cancelEditBtn');
+      const transactionFormTitle = document.getElementById('transactionFormTitle');
+      const transactionFormHint = document.getElementById('transactionFormHint');
+      const currencyFormatter = new Intl.NumberFormat('en-NG', {
+        style: 'currency',
+        currency: 'NGN',
+        maximumFractionDigits: 2
+      });
+      const budgetMonthInput = document.getElementById('budgetMonth');
+      const budgetCategoryInput = document.getElementById('budgetCategory');
+      const budgetAmountInput = document.getElementById('budgetAmount');
+      const transactionCategoryInput = transactionForm.elements.category;
+      const expenseCategoryNames = [
+        'Food', 'Transport', 'Utilities', 'Savings', 'Healthcare', 'Education',
+        'Personal Care', 'Subscription', 'Rent', 'Other'
+      ];
+      const incomeCategoryNames = ['Salary', 'Side Hustle', 'Allowance', 'Freelance/Work', 'Gifts'];
+      const transactionCategoryNames = [...expenseCategoryNames, ...incomeCategoryNames];
+      const normalizeCategory = category => category.trim().toLowerCase().replace(/\s+/g, ' ');
+      const allowedBudgetCategories = new Set(expenseCategoryNames.map(normalizeCategory));
+      const currentDate = new Date();
+      const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+      let transactions = [];
+      let storageReady = false;
+      let editingTransactionId = null;
+
+      function showTransactionStatus(message, isError = false) {
+        transactionStatus.textContent = message;
+        transactionStatus.classList.toggle('is-error', isError);
+      }
+
+      function makeElement(tagName, className, text) {
+        const element = document.createElement(tagName);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+      }
+
+      function makeEmptyState(title, detail) {
+        const state = makeElement('div', 'empty-state');
+        const icon = makeElement('span', 'empty-icon');
+        const iconElement = makeElement('i', 'fa-regular fa-file-lines');
+        icon.append(iconElement);
+        state.append(icon, makeElement('strong', '', title), makeElement('span', '', detail));
+        return state;
+      }
+
+      function updateTransactionCategoryOptions(selectedCategory = transactionCategoryInput.value) {
+        transactionCategoryInput.replaceChildren();
+        transactionCategoryNames.forEach(category => {
+          const option = document.createElement('option');
+          option.value = category;
+          option.textContent = category;
+          transactionCategoryInput.append(option);
+        });
+        transactionCategoryInput.value = transactionCategoryNames.includes(selectedCategory)
+          ? selectedCategory
+          : transactionCategoryNames[0];
+      }
+
+      function renderTransactions() {
+        transactionRows.replaceChildren();
+
+        if (!storageReady || transactions.length === 0) {
+          const row = document.createElement('tr');
+          row.className = 'empty-row';
+          const cell = document.createElement('td');
+          cell.colSpan = 6;
+          cell.append(storageReady
+            ? makeEmptyState('No transactions yet', 'Your saved entries will appear here.')
+            : makeEmptyState('Transactions unavailable', 'Check the message above and your browser storage settings.'));
+          row.append(cell);
+          transactionRows.append(row);
+          return;
+        }
+
+        const searchTerm = transactionSearch.value.trim().toLowerCase();
+        const matchingTransactions = [...transactions].reverse().filter(transaction => {
+          const searchableText = [
+            transaction.date,
+            new Date(`${transaction.date}T00:00:00`).toLocaleDateString(),
+            transaction.type,
+            transaction.category,
+            transaction.description,
+            transaction.amount,
+            currencyFormatter.format(transaction.amount)
+          ].join(' ').toLowerCase();
+
+          return searchableText.includes(searchTerm);
+        });
+
+        if (matchingTransactions.length === 0) {
+          const row = document.createElement('tr');
+          row.className = 'empty-row';
+          const cell = document.createElement('td');
+          cell.colSpan = 6;
+          cell.append(makeEmptyState('No matching transactions', 'Try a different description, category, date, type, or amount.'));
+          row.append(cell);
+          transactionRows.append(row);
+          return;
+        }
+
+        matchingTransactions.forEach(transaction => {
+          const row = document.createElement('tr');
+          const values = [
+            new Date(`${transaction.date}T00:00:00`).toLocaleDateString(),
+            transaction.type,
+            transaction.category,
+            transaction.description
+          ];
+
+          values.forEach((value, index) => {
+            const cell = document.createElement('td');
+            if (index === 1) {
+              const typeTag = makeElement('span', `type-tag ${transaction.type}`, value);
+              cell.append(typeTag);
+            } else {
+              cell.textContent = value;
+            }
+            row.append(cell);
+          });
+
+          const amountCell = document.createElement('td');
+          amountCell.append(makeElement('span', `amount ${transaction.type}`, currencyFormatter.format(transaction.amount)));
+          row.append(amountCell);
+          const actionCell = document.createElement('td');
+          const starButton = document.createElement('button');
+          starButton.type = 'button';
+          starButton.className = `bookmark-toggle${transaction.bookmarked ? ' is-bookmarked' : ''}`;
+          starButton.dataset.transactionId = transaction.id;
+          starButton.setAttribute('aria-pressed', String(transaction.bookmarked));
+          starButton.setAttribute('aria-label', transaction.bookmarked ? 'Remove bookmark' : 'Add bookmark');
+          starButton.title = transaction.bookmarked ? 'Remove bookmark' : 'Add bookmark';
+          const starIcon = makeElement('i', `${transaction.bookmarked ? 'fa-solid' : 'fa-regular'} fa-star`);
+          starButton.append(starIcon);
+          const editButton = makeElement('button');
+          editButton.type = 'button';
+          editButton.className = 'transaction-action';
+          editButton.dataset.action = 'edit';
+          editButton.dataset.transactionId = transaction.id;
+          editButton.setAttribute('aria-label', `Edit ${transaction.description}`);
+          editButton.title = 'Edit transaction';
+          editButton.append(makeElement('i', 'fa-solid fa-pen'));
+          const deleteButton = makeElement('button');
+          deleteButton.type = 'button';
+          deleteButton.className = 'transaction-action is-danger';
+          deleteButton.dataset.action = 'delete';
+          deleteButton.dataset.transactionId = transaction.id;
+          deleteButton.setAttribute('aria-label', `Delete ${transaction.description}`);
+          deleteButton.title = 'Delete transaction';
+          deleteButton.append(makeElement('i', 'fa-regular fa-trash-can'));
+          actionCell.className = 'transaction-actions';
+          actionCell.append(starButton, editButton, deleteButton);
+          row.append(actionCell);
+          transactionRows.append(row);
+        });
+      }
+
+      function renderBookmarks() {
+        bookmarkGrid.replaceChildren();
+        const savedTransactions = transactions.filter(transaction => transaction.bookmarked);
+
+        if (!storageReady || savedTransactions.length === 0) {
+          const empty = makeElement('div', 'bookmark-empty');
+          empty.textContent = storageReady
+            ? 'No bookmarks yet. Star a transaction in Recent activity to save it here.'
+            : 'Bookmarks are unavailable until browser storage can be read.';
+          bookmarkGrid.append(empty);
+          return;
+        }
+
+        savedTransactions.reverse().forEach(transaction => {
+          const card = makeElement('article', 'bookmark-card');
+          const top = makeElement('div', 'bookmark-card-top');
+          const icon = makeElement('span', `bookmark-icon${transaction.type === 'expense' ? ' expense' : ''}`);
+          icon.append(makeElement('i', transaction.type === 'income' ? 'fa-solid fa-arrow-down' : 'fa-solid fa-arrow-up'));
+          const typeTag = makeElement('span', `bookmark-tag ${transaction.type}`, transaction.type);
+          top.append(icon, typeTag);
+
+          const heading = makeElement('h3', '', transaction.description);
+          const category = makeElement('p', 'bookmark-category', `${transaction.category} · ${new Date(`${transaction.date}T00:00:00`).toLocaleDateString()}`);
+          const details = makeElement('div', 'bookmark-details');
+          details.append(makeElement('strong', `bookmark-amount ${transaction.type}`, currencyFormatter.format(transaction.amount)));
+
+          const removeButton = document.createElement('button');
+          removeButton.type = 'button';
+          removeButton.className = 'bookmark-remove';
+          removeButton.dataset.transactionId = transaction.id;
+          removeButton.setAttribute('aria-label', `Remove ${transaction.description} from bookmarks`);
+          removeButton.append(makeElement('i', 'fa-solid fa-star'), document.createTextNode(' Unbookmark'));
+          details.append(removeButton);
+          card.append(top, heading, category, details);
+          bookmarkGrid.append(card);
+        });
+      }
+
+      function updateDashboard() {
+        const incomeTransactions = transactions.filter(transaction => transaction.type === 'income');
+        const expenseTransactions = transactions.filter(transaction => transaction.type === 'expense');
+        const income = incomeTransactions
+          .reduce((total, transaction) => total + Number(transaction.amount || 0), 0);
+
+        const expense = expenseTransactions
+          .reduce((total, transaction) => total + Number(transaction.amount || 0), 0);
+
+        const balance = income - expense;
+        const totalTransactions = income + expense;
+
+        document.getElementById('incomeValue').textContent = currencyFormatter.format(income);
+        document.getElementById('expenseValue').textContent = currencyFormatter.format(expense);
+        document.getElementById('balanceValue').textContent = currencyFormatter.format(balance);
+        document.getElementById('totalValue').textContent = currencyFormatter.format(totalTransactions);
+        document.getElementById('incomeStatus').textContent = incomeTransactions.length
+          ? `${incomeTransactions.length} income transaction${incomeTransactions.length === 1 ? '' : 's'} recorded`
+          : 'No income recorded yet';
+        document.getElementById('expenseStatus').textContent = expenseTransactions.length
+          ? `${expenseTransactions.length} expense transaction${expenseTransactions.length === 1 ? '' : 's'} recorded`
+          : 'No expenses recorded yet';
+      }
+
+      function readBudgetData() {
+        const savedBudget = JSON.parse(localStorage.getItem(budgetStorageKey) || 'null');
+        if (savedBudget && savedBudget.months && typeof savedBudget.months === 'object') {
+          let removedNonExpenseBudget = false;
+          Object.values(savedBudget.months).forEach(monthData => {
+            if (!monthData || !monthData.categories || typeof monthData.categories !== 'object') return;
+            Object.keys(monthData.categories).forEach(category => {
+              if (!allowedBudgetCategories.has(normalizeCategory(category))) {
+                delete monthData.categories[category];
+                removedNonExpenseBudget = true;
+              }
+            });
+          });
+          if (removedNonExpenseBudget) {
+            localStorage.setItem(budgetStorageKey, JSON.stringify(savedBudget));
+          }
+          return savedBudget;
+        }
+
+        const migratedBudget = { months: {} };
+        if (savedBudget && savedBudget.month && savedBudget.categories) {
+          const categories = Object.fromEntries(Object.entries(savedBudget.categories)
+            .filter(([category]) => allowedBudgetCategories.has(normalizeCategory(category))));
+          migratedBudget.months[savedBudget.month] = { categories };
+          localStorage.setItem(budgetStorageKey, JSON.stringify(migratedBudget));
+        }
+        return migratedBudget;
+      }
+
+      function updateBudgetOverview() {
+        const selectedMonth = budgetMonthInput.value || currentMonth;
+        const budgetData = readBudgetData();
+        const categories = budgetData.months[selectedMonth]?.categories || {};
+        const expenseTransactions = transactions.filter(transaction =>
+          transaction.type === 'expense' && transaction.date.slice(0, 7) === selectedMonth
+        );
+        const expenseTotal = expenseTransactions
+          .reduce((total, transaction) => total + Number(transaction.amount || 0), 0);
+        const totalBudget = Object.values(categories)
+          .reduce((total, category) => total + Number(category.amount || 0), 0);
+        const categoryList = document.getElementById('categoryBudgetList');
+
+        categoryList.replaceChildren();
+        Array.from(budgetCategoryInput.options).forEach(option => {
+          const categoryName = option.value;
+          const normalizedCategory = normalizeCategory(categoryName);
+          const categoryTotal = expenseTransactions
+            .filter(transaction => {
+              const transactionCategory = normalizeCategory(transaction.category);
+              if (normalizedCategory === 'other') {
+                return !expenseCategoryNames
+                  .filter(category => category !== 'Other')
+                  .some(category => normalizeCategory(category) === transactionCategory);
+              }
+              return transactionCategory === normalizedCategory;
+            })
+            .reduce((total, transaction) => total + Number(transaction.amount || 0), 0);
+          const budgetEntry = Object.entries(categories).find(([key]) =>
+            normalizeCategory(key) === normalizedCategory
+          );
+          const categoryBudget = budgetEntry ? Number(budgetEntry[1].amount || 0) : 0;
+          const percentage = categoryBudget > 0
+            ? Math.round((categoryTotal / categoryBudget) * 100)
+            : 0;
+          const item = document.createElement('div');
+          item.className = 'category-item';
+          const heading = document.createElement('div');
+          heading.className = 'category-head';
+          const nameLabel = document.createElement('span');
+          nameLabel.textContent = categoryName;
+          const amountLabel = document.createElement('span');
+          amountLabel.textContent = `${currencyFormatter.format(categoryTotal)} / ${currencyFormatter.format(categoryBudget)}`;
+          heading.append(nameLabel, amountLabel);
+
+          const progress = document.createElement('div');
+          progress.className = 'progress';
+          const bar = document.createElement('div');
+          bar.className = 'progress-bar';
+          bar.style.width = `${Math.min(percentage, 100)}%`;
+          if (percentage >= 100) bar.classList.add('danger');
+          else if (percentage >= 80) bar.classList.add('warning');
+          progress.append(bar);
+          item.append(heading, progress);
+          categoryList.append(item);
+        });
+
+        const remaining = Math.max(totalBudget - expenseTotal, 0);
+        const percent = totalBudget > 0
+          ? Math.min(100, Math.round((expenseTotal / totalBudget) * 100))
+          : 0;
+
+        document.getElementById('budgetProgressValue').textContent = `${percent}%`;
+        document.getElementById('budgetProgressCircle').style.setProperty('--budget-progress', `${percent}%`);
+        document.getElementById('budgetSpentValue').textContent = currencyFormatter.format(expenseTotal);
+        document.getElementById('budgetRemainingValue').textContent = currencyFormatter.format(remaining);
+        document.getElementById('budgetMonthValue').textContent = selectedMonth;
+
+        const selectedCategoryBudget = categories[budgetCategoryInput.value];
+        budgetAmountInput.value = selectedCategoryBudget ? selectedCategoryBudget.amount : '';
+      }
+
+      function setBudget() {
+        const budgetSection = document.getElementById('budget');
+        if (budgetSection) {
+          budgetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        const amountField = document.getElementById('budgetAmount');
+        if (amountField) amountField.focus();
+      }
+
+      function exportData() {
+        const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+        const rows = [[
+          'Record type', 'Date', 'Type', 'Category', 'Description', 'Amount', 'Budget month', 'Bookmarked'
+        ]];
+
+        transactions.forEach(transaction => {
+          rows.push([
+            'Transaction', transaction.date, transaction.type, transaction.category,
+            transaction.description, transaction.amount, '', transaction.bookmarked ? 'Yes' : 'No'
+          ]);
+        });
+
+        const budgetData = readBudgetData();
+        Object.entries(budgetData.months).forEach(([month, monthData]) => {
+          Object.entries(monthData.categories || {}).forEach(([category, budget]) => {
+            rows.push(['Budget', '', '', category, 'Monthly category budget', budget.amount, month, '']);
+          });
+        });
+
+        const csvContent = '\uFEFF' + rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'cashguard-data.csv';
+        link.click();
+        URL.revokeObjectURL(url);
+        showTransactionStatus('Data exported as a spreadsheet-friendly CSV file.');
+      }
+
+      function clearData() {
+        if (!window.confirm('Clear all transactions and saved budget?')) return;
+
+        localStorage.removeItem(transactionStorageKey);
+        localStorage.removeItem(budgetStorageKey);
+        transactions = [];
+        renderTransactions();
+        renderBookmarks();
+        updateDashboard();
+        updateBudgetOverview();
+        showTransactionStatus('All data cleared.');
+      }
+
+      function persistTransactions(nextTransactions) {
+        try {
+          localStorage.setItem(transactionStorageKey, JSON.stringify(nextTransactions));
+          transactions = nextTransactions;
+          renderTransactions();
+          renderBookmarks();
+          updateDashboard();
+          updateBudgetOverview();
+          showTransactionStatus('Changes saved on this device.');
+          return true;
+        } catch (error) {
+          console.error('Unable to save transactions in browser storage.', error);
+          showTransactionStatus('Could not save changes. Check that browser storage is available.', true);
+          return false;
+        }
+      }
+
+      function resetTransactionEditor() {
+        editingTransactionId = null;
+        transactionForm.reset();
+        updateTransactionCategoryOptions();
+        transactionFormTitle.textContent = 'Add transaction';
+        transactionFormHint.textContent = 'Log a new entry in a few seconds.';
+        saveTransactionBtn.textContent = 'Save Transaction';
+        cancelEditBtn.hidden = true;
+      }
+
+      function editTransaction(transactionId) {
+        const transaction = transactions.find(item => item.id === transactionId);
+        if (!transaction) return;
+
+        editingTransactionId = transaction.id;
+        transactionForm.elements.date.value = transaction.date;
+        transactionForm.elements.description.value = transaction.description;
+        transactionForm.elements.type.value = transaction.type;
+        updateTransactionCategoryOptions(transaction.category);
+        transactionForm.elements.amount.value = transaction.amount;
+        transactionFormTitle.textContent = 'Edit transaction';
+        transactionFormHint.textContent = 'Update the details, then save your changes.';
+        saveTransactionBtn.textContent = 'Update Transaction';
+        cancelEditBtn.hidden = false;
+        transactionForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        transactionForm.elements.description.focus({ preventScroll: true });
+      }
+
+      try {
+        const storedTransactions = localStorage.getItem(transactionStorageKey);
+        const parsedTransactions = storedTransactions ? JSON.parse(storedTransactions) : [];
+        const validTransactions = Array.isArray(parsedTransactions) && parsedTransactions.every(transaction =>
+          transaction &&
+          typeof transaction.id === 'string' &&
+          typeof transaction.date === 'string' &&
+          typeof transaction.type === 'string' &&
+          typeof transaction.category === 'string' &&
+          typeof transaction.description === 'string' &&
+          typeof transaction.amount === 'number' &&
+          Number.isFinite(transaction.amount) &&
+          typeof transaction.bookmarked === 'boolean'
+        );
+
+        if (!validTransactions) {
+          throw new Error('Saved transaction data has an unexpected format.');
+        }
+
+        transactions = parsedTransactions;
+        storageReady = true;
+      } catch (error) {
+        console.error('Unable to load transactions from browser storage.', error);
+        showTransactionStatus('Could not load saved transactions. Check browser storage settings.', true);
+        transactionForm.querySelectorAll('input, select, button').forEach(control => {
+          control.disabled = true;
+        });
+      }
+
+      updateTransactionCategoryOptions();
+      if (!budgetMonthInput.value) budgetMonthInput.value = currentMonth;
+      renderTransactions();
+      renderBookmarks();
+      updateDashboard();
+      updateBudgetOverview();
+      transactionSearch.addEventListener('input', renderTransactions);
+      budgetMonthInput.addEventListener('change', updateBudgetOverview);
+      budgetCategoryInput.addEventListener('change', updateBudgetOverview);
+
+      document.getElementById('completeSetupBtn')?.addEventListener('click', () => {
+        const transactionSection = document.getElementById('transaction');
+        if (transactionSection) {
+          transactionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      document.getElementById('budgetForm')?.addEventListener('submit', event => {
+        event.preventDefault();
+
+        const category = document.getElementById('budgetCategory')?.value.trim() || '';
+        const amount = Number(document.getElementById('budgetAmount')?.value || 0);
+        const month = document.getElementById('budgetMonth')?.value || '';
+
+        if (!month || !category || !Number.isFinite(amount) || amount <= 0) {
+          showTransactionStatus('Choose a category, enter a valid amount, and select a month.', true);
+          return;
+        }
+
+        const savedBudget = readBudgetData();
+        savedBudget.months[month] = savedBudget.months[month] || { categories: {} };
+        savedBudget.months[month].categories[category] = { amount };
+
+        localStorage.setItem(budgetStorageKey, JSON.stringify(savedBudget));
+        updateBudgetOverview();
+        showTransactionStatus(`${category} budget saved successfully.`);
+      });
+
+      transactionForm.addEventListener('submit', event => {
+        event.preventDefault();
+        if (!storageReady) return;
+
+        const formData = new FormData(transactionForm);
+        const amount = Number(formData.get('amount'));
+        if (!Number.isFinite(amount) || amount <= 0) {
+          showTransactionStatus('Enter an amount greater than zero.', true);
+          return;
+        }
+
+        const transactionChanges = {
+          date: String(formData.get('date')),
+          description: String(formData.get('description')).trim(),
+          category: String(formData.get('category')),
+          type: String(formData.get('type')),
+          amount
+        };
+        const wasEditing = Boolean(editingTransactionId);
+        const nextTransactions = wasEditing
+          ? transactions.map(transaction => transaction.id === editingTransactionId
+            ? { ...transaction, ...transactionChanges }
+            : transaction)
+          : [...transactions, {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            ...transactionChanges,
+            bookmarked: false
+          }];
+
+        if (persistTransactions(nextTransactions)) {
+          resetTransactionEditor();
+          showTransactionStatus(wasEditing ? 'Transaction updated.' : 'Transaction added.');
+        }
+      });
+
+      cancelEditBtn.addEventListener('click', resetTransactionEditor);
+
+      transactionRows.addEventListener('click', event => {
+        const button = event.target.closest('.bookmark-toggle, .transaction-action');
+        if (!button || !storageReady) return;
+
+        const transactionId = button.dataset.transactionId;
+        const action = button.dataset.action || 'bookmark';
+
+        if (action === 'edit') {
+          editTransaction(transactionId);
+          return;
+        }
+
+        if (action === 'delete') {
+          if (!window.confirm('Delete this transaction?')) return;
+          if (editingTransactionId === transactionId) resetTransactionEditor();
+          const nextTransactions = transactions.filter(transaction => transaction.id !== transactionId);
+          if (persistTransactions(nextTransactions)) showTransactionStatus('Transaction deleted.');
+          return;
+        }
+
+        const nextTransactions = transactions.map(transaction =>
+          transaction.id === transactionId
+            ? { ...transaction, bookmarked: !transaction.bookmarked }
+            : transaction
+        );
+        persistTransactions(nextTransactions);
+      });
+
+      document.addEventListener('click', event => {
+        const settings = document.getElementById('settingsList');
+        const navRight = document.querySelector('.nav-right');
+
+        if (!navRight || !settings) return;
+
+        if (!navRight.contains(event.target)) {
+          settings.style.display = 'none';
+        }
+      });
+
+      bookmarkGrid.addEventListener('click', event => {
+        const button = event.target.closest('.bookmark-remove');
+        if (!button || !storageReady) return;
+
+        const nextTransactions = transactions.map(transaction =>
+          transaction.id === button.dataset.transactionId
+            ? { ...transaction, bookmarked: false }
+            : transaction
+        );
+        persistTransactions(nextTransactions);
+      });
+    </script>
+</body>
+</html>
